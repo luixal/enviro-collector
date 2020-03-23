@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Author: Luis Alberto Pérez García <luixal@gmail.com>
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 from os import getenv
 import logging
@@ -25,8 +25,12 @@ sound_reading_interval = float(getenv("SOUND_READING_INTERVAL", interval))
 soundLevelToReach = float(getenv("SOUND_LEVEL_TO_REACH", 0.3))
 # temp_compoensation_factor for compensating temperature:
 temp_compoensation_factor = float(getenv("TEMP_COMPENSATION_FACTOR", 1.0))
-# move SERVER_URL here??
+# server url:
 server_url = getenv("SERVER_URL", "http://localhost:1880/sensor")
+# http basic auth:
+http_auth = getenv("HTTP_AUTH")
+http_auth_username = getenv("HTTP_AUTH_USERNAME")
+http_auth_password = getenv("HTTP_AUTH_PASSWORD")
 
 # logs env values:
 messageConfig = "\nENV Values:\n\n"
@@ -35,6 +39,9 @@ messageConfig += """  - SOUND_READING_INTERVAL:\t\033[1m{}\033[0m\n""".format(so
 messageConfig += """  - SOUND_LEVEL_TO_REACH:\t\033[1m{}\033[0m\n""".format(soundLevelToReach)
 messageConfig += """  - TEMP_COMPENSATION_FACTOR:\t\033[1m{}\033[0m\n""".format(temp_compoensation_factor)
 messageConfig += """  - SERVER_URL:\t\t\t\033[1m{}\033[0m\n""".format(server_url)
+if (http_auth and http_auth_username and http_auth_password):
+    messageConfig += """  - HTTP_AUTH:\t\t\t\033[1m{} | {} | {}\033[0m\n""".format(http_auth, http_auth_username, http_auth_password)
+
 logging.info(messageConfig)
 
 # format value as bold text:
@@ -74,7 +81,7 @@ logging.info(get_welcome_message())
 def onSoundEvent(amps, value):
     print("Sound detected with value {}".format(bold_value(value)))
 
-serverSender = ServerSender(server_url, deviceValues['Serial'])
+serverSender = ServerSender(server_url, deviceValues['Serial'], http_auth, http_auth_username, http_auth_password)
 # on sensor readings callback:
 def onSensorReadings(values):
     temperature = values['temperature']
