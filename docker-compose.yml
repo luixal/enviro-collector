@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+
+  collector:
+    image: "luixal/enviro-collector"
+    container_name: "enviro-collector"
+    privileged: true
+    environment:
+      SERVER_URL: "http://ilab.clece.es/nodered/nodes/sensor-auth"
+      HTTP_AUTH: "basic"
+      HTTP_AUTH_USERNAME: "collector"
+      HTTP_AUTH_PASSWORD: "coll9874292et56"
+      INTERVAL: 10
+      TEMP_COMPENSATION_FACTOR: 1.4
